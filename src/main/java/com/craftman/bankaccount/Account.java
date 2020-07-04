@@ -6,9 +6,6 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.craftman.bankaccount.OperationType.DEPOSIT;
 import static com.craftman.bankaccount.OperationType.WITHDRAWAL;
@@ -25,7 +22,7 @@ public class Account implements AccountApi {
 
     @Override
     public void deposit(BigDecimal newAmount) {
-        throwExceptionWhenIcorrectAmount(newAmount, DEPOSIT);
+        throwExceptionWhenInValidAmount(newAmount, DEPOSIT);
 
         this.balanceBeforOperation = this.statement.getCurrentBalance();
         statement.recordTransaction(newAmount, DEPOSIT);
@@ -40,7 +37,8 @@ public class Account implements AccountApi {
 
     @Override
     public void withDraw(BigDecimal amountToWithDraw) {
-        this.throwExceptionWhenIcorrectAmount(amountToWithDraw, OperationType.WITHDRAWAL);
+        this.throwExceptionWhenInValidAmount(amountToWithDraw, OperationType.WITHDRAWAL);
+
         this.balanceBeforOperation = this.statement.getCurrentBalance();
         this.statement.recordTransaction(amountToWithDraw, WITHDRAWAL);
     }
@@ -65,8 +63,8 @@ public class Account implements AccountApi {
         log.info("BALANCE: {}", this.statement.getCurrentBalance());
     }
 
-    private void throwExceptionWhenIcorrectAmount(BigDecimal newAmount, OperationType operationType) {
-        if (newAmount.compareTo(BigDecimal.ZERO) <= 0 && operationType.equals(DEPOSIT)) {
+    private void throwExceptionWhenInValidAmount(BigDecimal newAmount, OperationType operationType) {
+        if (newAmount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException(AMOUNT_NOT_ALLOWED_MESSAGE);
         } else if (newAmount.compareTo(this.statement.getCurrentBalance()) > 0 && operationType.equals(WITHDRAWAL)) {
             throw new IllegalArgumentException(INSUFFICENT_FUND_MESSAGE);

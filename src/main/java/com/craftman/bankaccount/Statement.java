@@ -32,11 +32,11 @@ public class Statement implements StatementApi {
     public BigDecimal getCurrentBalance() {
         if (this.operations.isEmpty()) return BigDecimal.ZERO;
 
-        Map<OperationType, List<Operation>> amountByOperation = this.operations.stream().collect(Collectors.groupingBy(Operation::getType));
-        BigDecimal totalDeposit = amountByOperation.get(DEPOSIT).stream().map(Operation::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
-        BigDecimal totalWithDrawal = amountByOperation.get(WITHDRAWAL) != null ? amountByOperation.get(WITHDRAWAL).stream()
-                .map(Operation::getAmount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add) : BigDecimal.ZERO;
+        Map<OperationType, BigDecimal> amountByOperation = this.operations.stream()
+                .collect(Collectors.groupingBy(Operation::getType, Collectors.reducing(BigDecimal.ZERO, Operation::getAmount,BigDecimal::add)));
+
+        BigDecimal totalDeposit = amountByOperation.get(DEPOSIT);
+        BigDecimal totalWithDrawal = amountByOperation.get(WITHDRAWAL) != null ? amountByOperation.get(WITHDRAWAL) : BigDecimal.ZERO;
 
         return totalDeposit.subtract(totalWithDrawal);
     }
