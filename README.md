@@ -8,6 +8,7 @@ The goal of this project is to implement common account operations:
 - Deposit and Withdrawal
 -   Account statement (date, amount, balance)
 -   Statement printing
+
 more details available at this [link](https://gist.github.com/abachar/d20bdcd07dac589feef8ef21b487648c)
 
 ## Prerequisites
