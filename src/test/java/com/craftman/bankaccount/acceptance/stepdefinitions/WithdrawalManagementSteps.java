@@ -15,13 +15,13 @@ import static org.junit.Assert.assertTrue;
 public class WithdrawalManagementSteps {
     private BigDecimal amountToWithDraw;
     Account account = new Account();
-    BigDecimal balance;
     String errorMessage;
+    List<BigDecimal> savings;
 
     @Given("I have saved the following amounts in my account")
     public void i_have_saved_the_following_amounts_in_my_account(io.cucumber.datatable.DataTable dataTable) {
-        List<BigDecimal> savings = dataTable.asList(BigDecimal.class);
-        account.setBalance(savings.stream().reduce(BigDecimal.ZERO, BigDecimal::add));
+        List<BigDecimal> savings = this.savings = dataTable.asList(BigDecimal.class);
+        savings.forEach(this.account::deposit);
     }
 
     @When("I withdraw amount {int} from my account")
@@ -40,11 +40,9 @@ public class WithdrawalManagementSteps {
         assertTrue(isAmountRetrived);
     }
 
-    @Then("my bank account balance should be {int}")
-    public void my_bank_account_balance_should_be(Integer balance) {
-        this.balance = new BigDecimal(balance);
-        BigDecimal currentBalance = account.getBalance();
-        assertEquals(currentBalance, this.balance);
+    @Then("my bank account with balance {int} should be remained")
+    public void my_bank_account_balance_should_be_remained(Integer balance) {
+        assertEquals(BigDecimal.ZERO, this.account.getStatement().getCurrentBalance());
     }
 
 

@@ -20,9 +20,6 @@ public class Account implements AccountApi {
 
     @Getter
     @Setter
-    BigDecimal balance = BigDecimal.ZERO;
-    @Setter
-    @Getter
     Statement statement = new Statement();
     BigDecimal balanceBeforOperation;
 
@@ -30,29 +27,28 @@ public class Account implements AccountApi {
     public void deposit(BigDecimal newAmount) {
         throwExceptionWhenIcorrectAmount(newAmount, DEPOSIT);
 
-        this.balanceBeforOperation = this.balance;
+        this.balanceBeforOperation = this.statement.getCurrentBalance();
         statement.recordTransaction(newAmount, DEPOSIT);
-        this.balance = balance.add(newAmount);
     }
 
 
     @Override
     public boolean doesNewAmountAdded(BigDecimal newAmount) {
-        return this.balance.equals(this.balanceBeforOperation.add(newAmount));
+
+        return this.statement.getCurrentBalance().equals(this.balanceBeforOperation.add(newAmount));
     }
 
     @Override
     public void withDraw(BigDecimal amountToWithDraw) {
         this.throwExceptionWhenIcorrectAmount(amountToWithDraw, OperationType.WITHDRAWAL);
-        this.balanceBeforOperation = this.balance;
+        this.balanceBeforOperation = this.statement.getCurrentBalance();
         this.statement.recordTransaction(amountToWithDraw, WITHDRAWAL);
-        this.balance = this.balanceBeforOperation.equals(amountToWithDraw) ? BigDecimal.ZERO : this.balance.subtract(amountToWithDraw);
     }
 
     @Override
     public void printHistory() {
-        log.info("OPERATION     | DATE             | AMOUNT");
-        log.info("********************************************");
+        log.info("OPERATION     | DATE             | AMOUNT    | BALANCE");
+        log.info("********************************************************");
         log.info("");
         this.statement.getOperations()
                 .forEach(operation -> log.info(new StringBuilder()
@@ -61,30 +57,27 @@ public class Account implements AccountApi {
                         .append(operation.getDate())
                         .append(" | ")
                         .append(operation.getAmount())
+                        .append("       | ")
+                        .append(operation.getBalance())
                         .append("\n")
                         .toString()));
-        log.info("**********************************************");
-        log.info("BALANCE: {}", this.getBalanceFromHistory());
-    }
-
-    private BigDecimal getBalanceFromHistory() {
-        Map<OperationType, List<Operation>> amountByOperation = this.statement.getOperations().stream().collect(Collectors.groupingBy(Operation::getType));
-        BigDecimal totalDeposit = amountByOperation.get(DEPOSIT).stream().map(Operation::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
-        BigDecimal totalWithDrawal = amountByOperation.get(WITHDRAWAL).stream().map(Operation::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
-        return totalDeposit.subtract(totalWithDrawal);
+        log.info("**********************************************************");
+        log.info("BALANCE: {}", this.statement.getCurrentBalance());
     }
 
     private void throwExceptionWhenIcorrectAmount(BigDecimal newAmount, OperationType operationType) {
         if (newAmount.compareTo(BigDecimal.ZERO) <= 0 && operationType.equals(DEPOSIT)) {
             throw new IllegalArgumentException(AMOUNT_NOT_ALLOWED_MESSAGE);
-        } else if (newAmount.compareTo(this.balance) > 0 && operationType.equals(WITHDRAWAL)) {
+        } else if (newAmount.compareTo(this.statement.getCurrentBalance()) > 0 && operationType.equals(WITHDRAWAL)) {
             throw new IllegalArgumentException(INSUFFICENT_FUND_MESSAGE);
         }
     }
 
     @Override
     public boolean doesAccountCharged(BigDecimal amountToWithDraw) {
-        return this.balance.equals(this.balanceBeforOperation.subtract(amountToWithDraw));
+
+        return this.statement.getCurrentBalance().equals(this.balanceBeforOperation.subtract(amountToWithDraw));
     }
+
 
 }

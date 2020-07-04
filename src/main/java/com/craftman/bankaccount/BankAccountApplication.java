@@ -16,7 +16,6 @@ public class BankAccountApplication {
         account.withDraw(new BigDecimal(80));
         account.deposit(new BigDecimal(200));
         account.deposit(new BigDecimal(20));
-
         account.withDraw(new BigDecimal(900));
 
         account.printHistory();

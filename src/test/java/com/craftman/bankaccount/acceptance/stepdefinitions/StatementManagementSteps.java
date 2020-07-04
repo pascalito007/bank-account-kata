@@ -21,6 +21,7 @@ public class StatementManagementSteps {
     public static final String DATE_FIELD_NAME = "date";
     public static final String OPERATION_TYPE_FIELD_NAME = "operationType";
     public static final String AMOUNT_FIELD_NAME = "amount";
+    public static final String BALENCE_FIELD_NAME = "balance";
 
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
     private Account account = new Account();
@@ -34,7 +35,6 @@ public class StatementManagementSteps {
 
         statement.setOperations(this.operationsMapToOperations(operationsMap));
         this.account.setStatement(statement);
-        this.account.setBalance(this.getBalance(statement.getOperations()));
     }
 
     private List<Operation> operationsMapToOperations(final List<Map<String, String>> operationsMap) {
@@ -46,11 +46,9 @@ public class StatementManagementSteps {
         operation.setType(OperationType.valueOf(map.get(OPERATION_TYPE_FIELD_NAME)));
         operation.setDate(LocalDateTime.parse(map.get(DATE_FIELD_NAME), formatter));
         operation.setAmount(new BigDecimal(map.get(AMOUNT_FIELD_NAME)));
-        return operation;
-    }
+        operation.setBalance(new BigDecimal(map.get(BALENCE_FIELD_NAME)));
 
-    private BigDecimal getBalance(final List<Operation> operationList) {
-        return operationList.stream().map(Operation::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+        return operation;
     }
 
     @When("I see the history of my operations")

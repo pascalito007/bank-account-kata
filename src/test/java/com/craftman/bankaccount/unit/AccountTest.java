@@ -20,16 +20,16 @@ public class AccountTest {
     @Test
     public void givenCorrectAmountShouldMakeDeposit() {
         this.account.deposit(CORRECT_DEPOSIT_AMOUNT);
-        assertNotNull(this.account.getBalance());
-        assertNotEquals(this.account.getBalance(), BigDecimal.ZERO);
-        assertEquals(CORRECT_DEPOSIT_AMOUNT, this.account.getBalance());
+        assertNotNull(this.account.getStatement().getCurrentBalance());
+        assertNotEquals(this.account.getStatement().getCurrentBalance(), BigDecimal.ZERO);
+        assertEquals(CORRECT_DEPOSIT_AMOUNT, this.account.getStatement().getCurrentBalance());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void givenIncorrectAmountShouldThrowIllegalArgumentException() {
         this.account.deposit(INCORRECT_DEPOSIT_AMOUNT);
         BigDecimal expectedBalance = BigDecimal.ZERO;
-        assertEquals(expectedBalance, this.account.getBalance());
+        assertEquals(expectedBalance, this.account.getStatement().getCurrentBalance());
     }
 
     @Test
@@ -39,7 +39,7 @@ public class AccountTest {
 
         this.account.withDraw(CORRECT_WITHDRAWAL_AMOUNT);
         BigDecimal expectedBalance = new BigDecimal(6);
-        assertEquals(expectedBalance, this.account.getBalance());
+        assertEquals(expectedBalance, this.account.getStatement().getCurrentBalance());
     }
 
 }

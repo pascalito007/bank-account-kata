@@ -16,7 +16,7 @@ Feature: Withdrawal management
       |100|
       |500|
     When I withdraw amount 600 from my account
-    Then my bank account balance should be 0
+    Then my bank account with balance 0 should be remained
 
   Scenario: Retrieve incorrect amount
 

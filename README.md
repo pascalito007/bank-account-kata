@@ -8,7 +8,6 @@ The goal of this project is to implement common account operations:
 - Deposit and Withdrawal
 -   Account statement (date, amount, balance)
 -   Statement printing
-
 more details available at this [link](https://gist.github.com/abachar/d20bdcd07dac589feef8ef21b487648c)
 
 ## Prerequisites
@@ -23,6 +22,7 @@ This is a gradle project created using [Spring Initalizr](https://start.spring.i
 - features files under `test/../features` directory: These are cucumber scenarios files
 - steps definition files under `test/../stepfinitions` directory: These are Steps definition files that match above test scenarios.
 - `AccountManagementTest` and `AccountTest` are test runners and account unit test files that follows BDD+TDD pricinples.
+- `Dockerfile`: This file let you build an image of the application and then a running instance of the image (container).
 
 ## Running
 
@@ -33,7 +33,17 @@ This is a gradle project created using [Spring Initalizr](https://start.spring.i
 
  Below some sample results by running gradle cucumber task. The built-in **pretty** plugin is used to have beautifull output :)
  
- <img src="https://live.staticflickr.com/65535/50074226858_e8bf266e15_z.jpg" width="500">
+ <img src="https://live.staticflickr.com/65535/50076136141_915c2a4918_z.jpg">
  
  Below some result when running the main application file 
-<img src="https://live.staticflickr.com/65535/50074238213_41904a43d7_z.jpg" width="500">
+<img src="https://live.staticflickr.com/65535/50075576273_3c947b694c_z.jpg" width="500">
+
+Sample execution HTML report is available in `target/SystemTestReports/html.html`
+
+## Containerize app with Docker
+
+There is a small Dockerfile that let you run the jar file inside a container. You first need to have [Docker](https://docs.docker.com/engine/install/ubuntu/) in your computer or virtual machine.
+Just hit below commands to run the app inside a container.
+
+    docker build -t bank-account .
+    docker run -it bank-account

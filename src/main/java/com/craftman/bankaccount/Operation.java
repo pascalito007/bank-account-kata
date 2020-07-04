@@ -14,4 +14,5 @@ public class Operation {
     OperationType type;
     LocalDateTime date;
     BigDecimal amount;
+    BigDecimal balance = BigDecimal.ZERO;
 }

@@ -8,7 +8,7 @@ import org.junit.runner.RunWith;
 @CucumberOptions(
         features = {"src/test/java/com/craftman/bankaccount/acceptance/features"},
         glue = {"com.craftman.bankaccount.acceptance.stepdefinitions"},
-        plugin = {"pretty"}
+        plugin = {"pretty", "html:target/SystemTestReports/html.html"}
 )
 public class AccountManagementTest {
 
